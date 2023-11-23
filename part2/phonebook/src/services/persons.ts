@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { IPerson } from '../App'
 
-const baseUrl = 'http://localhost:3001/persons'
+const baseUrl = 'http://localhost:3001/api/persons'
 
 const getPersons = () => {
   return axios.get<IPerson[]>(baseUrl)
