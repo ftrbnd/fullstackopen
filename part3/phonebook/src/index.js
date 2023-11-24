@@ -80,12 +80,13 @@ app.put('/api/persons/:id', (req, res) => {
         });
     }
 
-    Person.findByIdAndUpdate(req.params.id, person, { new: true })
-        .then(updatedPerson => {
-            res.json(updatedPerson);
-        }).catch(err => {
-            next(err);
-        });
+    Person.findByIdAndUpdate(req.params.id, person, {
+        new: true, runValidators: true, context: 'query'
+    }).then(updatedPerson => {
+        res.json(updatedPerson);
+    }).catch(err => {
+        next(err);
+    });
 });
 
 // 3.4
@@ -134,7 +135,9 @@ app.use((error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' });
-  } 
+  } else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error);
 })

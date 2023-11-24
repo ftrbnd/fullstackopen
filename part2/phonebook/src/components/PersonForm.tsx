@@ -50,8 +50,9 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
                     setNotificationMessage(`Created ${response.data.name}`);
                     setNotificationSuccess(true);
                 })
-                .catch(() => {
-                    setNotificationMessage('Failed to create person');
+                .catch((err) => {
+                    console.error(err);
+                    setNotificationMessage(err.response.data.error);
                     setNotificationSuccess(false);
                 })
         }
