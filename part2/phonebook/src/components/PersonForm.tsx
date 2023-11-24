@@ -20,7 +20,7 @@ const PersonForm = ({ persons, setPersons, setNotificationMessage, setNotificati
             return alert('Please fill out both fields')
         }
 
-        const personExists = persons.find(person => person.name === newName);
+        const personExists = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
         if (personExists && personExists.id) {
             const confirmUpdate = confirm(`${newName} is already added to phonebook, replace the old number with a new one?`);
 
