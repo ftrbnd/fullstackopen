@@ -30,7 +30,7 @@ app.use(morgan((tokens, req, res) => {
 }));
 
 // 3.1
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', (req, res, next) => {
     Person.find({})
         .then(persons => {
             res.json(persons);
@@ -40,7 +40,7 @@ app.get('/api/persons', (req, res) => {
 });
 
 // 3.2
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     const now = new Date();
 
     Person.find({})
@@ -55,7 +55,7 @@ app.get('/info', (req, res) => {
 });
 
 // 3.3
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', (req, res, next) => {
     Person.findById(req.params.id)
         .then(person => {
             if (person) {
@@ -69,7 +69,7 @@ app.get('/api/persons/:id', (req, res) => {
 });
 
 // 3.17
-app.put('/api/persons/:id', (req, res) => {
+app.put('/api/persons/:id', (req, res, next) => {
     const person = req.body;
 
     console.log('new person: ', person);
@@ -90,7 +90,7 @@ app.put('/api/persons/:id', (req, res) => {
 });
 
 // 3.4
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
     Person.findByIdAndDelete(req.params.id)
         .then(result => {
             res.status(204).end();
@@ -100,7 +100,7 @@ app.delete('/api/persons/:id', (req, res) => {
 });
 
 // 3.5
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', (req, res, next) => {
     const person = req.body;
 
     // 3.6
