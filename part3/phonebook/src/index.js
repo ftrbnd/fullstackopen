@@ -1,31 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const Person = require('./models/Person');
 
 const app = express();
-
-const persons = [
-    { 
-    "id": 1,
-    "name": "Arto Hellas", 
-    "number": "040-123456"
-    },
-    { 
-    "id": 2,
-    "name": "Ada Lovelace", 
-    "number": "39-44-5323523"
-    },
-    { 
-    "id": 3,
-    "name": "Dan Abramov", 
-    "number": "12-43-234345"
-    },
-    { 
-    "id": 4,
-    "name": "Mary Poppendieck", 
-    "number": "39-23-6423122"
-    }
-];
 
 app.use(express.json());
 app.use(cors());
@@ -51,45 +31,44 @@ app.use(morgan((tokens, req, res) => {
 
 // 3.1
 app.get('/api/persons', (req, res) => {
-    res.json(persons);
+    Person.find({}).then(persons => {
+        res.json(persons);
+    });
 });
 
 // 3.2
 app.get('/info', (req, res) => {
     const now = new Date();
 
-    res.send(`
-        <p>Phonebook has info for ${persons.length} people</p>
-        <p>${now}</p>
-    `);
+    Person.find({}).then(persons => {
+        res.send(`
+            <p>Phonebook has info for ${persons.length} people</p>
+            <p>${now}</p>
+        `);
+    });
 });
 
 // 3.3
 app.get('/api/persons/:id', (req, res) => {
-    const person = persons[req.params.id - 1];
-
-    if (!person) {
+    Person.findById(req.params.id).then(person => {
+        res.json({ person });
+    }).catch(err => {
         return res.status(404).json({
             error: 'Person not found'
         });
-    }
-
-    res.json({ person });
+    });
 });
 
 // 3.4
 app.delete('/api/persons/:id', (req, res) => {
-    const person = persons[req.params.id - 1];
-
-    if (!person) {
-        return res.status(404).json({
-            error: 'Person not found'
+    Person.findByIdAndDelete(req.params.id)
+        .then(result => {
+            res.status(204).end();
+        }).catch(err => {
+            return res.status(404).json({
+                error: 'Person not found'
+            });
         });
-    }
-
-    persons.splice(req.params.id - 1, 1);
-
-    res.status(204).end();
 });
 
 // 3.5
@@ -101,19 +80,24 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({
             error: 'Name or number is missing'
         });
-    } else if (persons.some(p => p.name.toLowerCase() === person.name.toLowerCase())) {
-        return res.status(400).json({
-            error: 'Name already exists'
-        });
     }
+    // else if (persons.some(p => p.name.toLowerCase() === person.name.toLowerCase())) {
+    //     return res.status(400).json({
+    //         error: 'Name already exists'
+    //     });
+    // }
 
-    const id = Math.floor(Math.random() * 1000);
-    persons.push({ ...person, id });
+    const newPerson = new Person({
+        name: person.name,
+        number: person.number,
+    });
 
-    res.json({ person });
+    newPerson.save().then(savedPerson => {
+        res.json(savedPerson);
+    })
 });
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`)
 })
