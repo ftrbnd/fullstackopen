@@ -79,7 +79,42 @@ describe('creating a new blog post', () => {
   })
 })
 
+describe('deletion of a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const blogsAtStart = await blogsInDb()
+    const blogToDelete = blogsAtStart[0]
 
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAtEnd = await blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(
+      initialBlogs.length - 1
+    )
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  }, 100000)
+})
+
+describe('updating a blog', () => {
+  test('succeeds with status code 200 when updating likes', async () => {
+    const blogsAtStart = await blogsInDb()
+    const blogToUpdate = blogsAtStart[0]
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send({ ...blogToUpdate, likes: 100 })
+      .expect(200)
+
+    const blogsAtEnd = await blogsInDb()
+
+    expect(blogsAtEnd[0].likes).toBe(100)
+  })
+})
 
 afterAll(() => {
   mongoose.connection.close()
