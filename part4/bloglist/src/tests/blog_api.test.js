@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const app = require('../app')
 const supertest = require('supertest')
-const { initialBlogs, blogsInDb } = require('./test_helper')
+const { initialBlogs, blogsInDb } = require('../utils/blog_helper')
 const Blog = require('../models/Blog')
 
 const api = supertest(app)
@@ -119,3 +119,5 @@ describe('updating a blog', () => {
 afterAll(() => {
   mongoose.connection.close()
 })
+
+// TODO: currently at around 4 hours for part 4
