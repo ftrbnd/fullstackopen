@@ -1,13 +1,14 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/Blog')
+const User = require('../models/User')
 
 blogsRouter.get('/', async (request, response) => {
-  const blogs = await Blog.find({})
+  const blogs = await Blog.find({}).populate('author', { username: 1, name: 1 })
   response.json(blogs)
 })
 
 blogsRouter.get('/:id', async (request, response) => {
-  const blog = await Blog.findById(request.params.id)
+  const blog = await Blog.findById(request.params.id).populate('author', { username: 1, name: 1 })
 
   if (blog) {
     response.json(blog)
@@ -23,14 +24,20 @@ blogsRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'Missing title or url' })
   }
 
+  const randomAuthor = await User.findOne({})
+
   const blog = new Blog({
     title: body.title,
-    author: body.author,
+    author: randomAuthor.id,
     url: body.url,
     likes: body.likes ?? 0
   })
 
   const savedBlog = await blog.save()
+
+  randomAuthor.blogs = randomAuthor.blogs.concat(savedBlog._id)
+  randomAuthor.save()
+
   response.status(201).json(savedBlog)
 })
 
