@@ -162,7 +162,3 @@ describe('actions that require auth', () => {
     mongoose.connection.close()
   })
 })
-
-
-
-// TODO: currently at around 7.5 hours
