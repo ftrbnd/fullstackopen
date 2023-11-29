@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { updateBlog } from '../services/blogs'
+import { deleteBlog, updateBlog } from '../services/blogs'
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const [showBlog, setShowBlog] = useState(false)
   const [currentBlog, setCurrentBlog] = useState(blog)
 
@@ -16,11 +16,24 @@ const Blog = ({ blog }) => {
   const handleLike = async () => {
     try {
       const newBlog = await updateBlog({
-        ...blog,
-        likes: blog.likes + 1
+        ...currentBlog,
+        likes: currentBlog.likes + 1
       })
 
       setCurrentBlog(newBlog)
+    } catch (exception) {
+      console.error(exception)
+    }
+  }
+
+  const handleDelete = async () => {
+    try {
+      const confirm = window.confirm(`Remove blog "${currentBlog.title}" by ${currentBlog.author}?`)
+
+      if (confirm) {
+        await deleteBlog(currentBlog)
+        setCurrentBlog(null)
+      }
     } catch (exception) {
       console.error(exception)
     }
@@ -37,6 +50,7 @@ const Blog = ({ blog }) => {
           <div>{currentBlog.url}</div>
           <div>{currentBlog.likes} <button onClick={handleLike}>Like</button></div>
           <div>{currentBlog.user ? currentBlog.user.username : 'Unknown user'}</div>
+          {blog.user.username === user.username && <button onClick={handleDelete}>Delete</button>}
         </div>
       }
     </div>

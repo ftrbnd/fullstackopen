@@ -135,8 +135,8 @@ const App = () => {
         ? (
           <div>
             <p>{user.username} logged in</p>
-            {blogs.map(blog =>
-              <Blog key={blog.id} blog={blog} />
+            {blogs.sort((a, b) => { return b.likes - a.likes }).map(blog =>
+              <Blog key={blog.id} blog={blog} user={user} />
             )}
             <button onClick={handleLogout}>Logout</button>
 
