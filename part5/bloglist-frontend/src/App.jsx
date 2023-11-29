@@ -3,6 +3,8 @@ import Blog from './components/Blog'
 import { createBlog, getAllBlogs, setToken } from './services/blogs'
 import { login } from './services/login'
 import './styles.css'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -12,10 +14,6 @@ const App = () => {
   
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     async function getBlogs() {
@@ -131,33 +129,6 @@ const App = () => {
     </form>      
   )
 
-  const blogForm = () => (
-    <form onSubmit={addBlog}>
-      <label>
-      Title
-      <input
-        value={title}
-        onChange={({ target }) => setTitle(target.value)}
-      />
-      </label>
-      <label>
-      Author
-      <input
-        value={author}
-        onChange={({ target }) => setAuthor(target.value)}
-        />
-      </label>
-      <label>
-      Url
-      <input
-        value={url}
-        onChange={({ target }) => setUrl(target.value)}
-        />
-      </label>
-      <button type="submit">Create</button>
-    </form>  
-  )
-
   return (
     <div>
       <h2>Blogs</h2>
@@ -172,8 +143,11 @@ const App = () => {
             )}
             <button onClick={handleLogout}>Logout</button>
 
-            <h2>New Blog</h2>
-            {blogForm()}
+            <Togglable buttonLabel="New Blog">
+              <BlogForm
+                addBlog={addBlog}
+              />
+            </Togglable>
           </div>
         )
         : loginForm()
