@@ -15,6 +15,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const [title, setTitle] = useState('')
+    const [author, setAuthor] = useState('')
+    const [url, setUrl] = useState('')
+
   useEffect(() => {
     async function getBlogs() {
       const blogs = await getAllBlogs()
@@ -68,21 +72,14 @@ const App = () => {
   const addBlog = async (event) => {
     event.preventDefault()
 
-    if (!title || !author || !url) {
-      setNotification('Please fill in all fields')
-      setNotificationType('error')
-
-      return setTimeout(() => {
-        setNotification('')
-      }, 5000)
-    }
-
     try {
-      await createBlog({
+      const newBlog = await createBlog({
         title,
         author,
         url
       })
+
+      setBlogs(blogs.concat(newBlog))
 
       setNotification('Blog created')
       setNotificationType('success')
@@ -146,6 +143,12 @@ const App = () => {
             <Togglable buttonLabel="New Blog">
               <BlogForm
                 addBlog={addBlog}
+                title={title}
+                setTitle={setTitle}
+                author={author}
+                setAuthor={setAuthor}
+                url={url}
+                setUrl={setUrl}
               />
             </Togglable>
           </div>

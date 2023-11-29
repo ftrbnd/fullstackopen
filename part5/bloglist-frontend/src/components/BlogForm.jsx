@@ -1,9 +1,7 @@
 import { useState } from "react"
 
-const BlogForm = ({ addBlog }) => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+const BlogForm = ({ addBlog, title, setTitle, author, setAuthor, url, setUrl }) => {
+    
     
     return <form onSubmit={addBlog}>
         <h2>New Blog</h2>
