@@ -11,13 +11,13 @@ const App = () => {
   const [user, setUser] = useState(null) // has username, token
   const [notification, setNotification] = useState('')
   const [notificationType, setNotificationType] = useState('')
-  
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
   const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
 
   useEffect(() => {
     async function getBlogs() {
@@ -39,7 +39,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await login({ username, password })
       setToken(user.token)
@@ -54,7 +54,7 @@ const App = () => {
     } catch (exception) {
       setNotification('Invalid credentials')
       setNotificationType('error')
-      console.error(exception);
+      console.error(exception)
 
       setTimeout(() => {
         setNotification('')
@@ -106,7 +106,7 @@ const App = () => {
     <form onSubmit={handleLogin}>
       <div>
         Username
-          <input
+        <input
           type="text"
           value={username}
           name="Username"
@@ -115,7 +115,7 @@ const App = () => {
       </div>
       <div>
         Password
-          <input
+        <input
           type="password"
           value={password}
           name="Password"
@@ -123,7 +123,7 @@ const App = () => {
         />
       </div>
       <button type="submit">Login</button>
-    </form>      
+    </form>
   )
 
   return (
