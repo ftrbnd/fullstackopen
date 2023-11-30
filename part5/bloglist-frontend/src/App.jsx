@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
-import { createBlog, getAllBlogs, setToken } from './services/blogs'
+import { createBlog, getAllBlogs, setToken, updateBlog } from './services/blogs'
 import { login } from './services/login'
 import './styles.css'
 import BlogForm from './components/BlogForm'
@@ -102,6 +102,17 @@ const App = () => {
     }
   }
 
+  const likeBlog = async (blog) => {
+    try {
+      const newBlog = await updateBlog({
+        ...blog,
+        likes: blog.likes + 1
+      })
+    } catch (exception) {
+      console.error(exception)
+    }
+  }
+
   const loginForm = () => (
     <form onSubmit={handleLogin}>
       <div>
@@ -136,7 +147,7 @@ const App = () => {
           <div>
             <p>{user.username} logged in</p>
             {blogs.sort((a, b) => { return b.likes - a.likes }).map(blog =>
-              <Blog key={blog.id} blog={blog} user={user} />
+              <Blog key={blog.id} blog={blog} user={user} handleLike={() => likeBlog(blog)} />
             )}
             <button onClick={handleLogout}>Logout</button>
 
