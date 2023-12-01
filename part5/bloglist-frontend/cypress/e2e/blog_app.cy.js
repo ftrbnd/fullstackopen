@@ -67,7 +67,7 @@ describe('Blog app', function() {
       cy.contains('Likes: 1')
     })
 
-    it.only('a blog can be deleted by the user who created it', function () {
+    it('a blog can be deleted by the user who created it', function () {
       cy.contains('New Blog').click()
       cy.get('input#title').type('A blog created by Cypress')
       cy.get('input#author').type('Cypress')
@@ -79,6 +79,40 @@ describe('Blog app', function() {
       cy.contains('Delete').click()
 
       cy.get('div.blogs').should('not.contain', 'A blog created by Cypress')
+    })
+
+    it.only('a blog\'s delete button can only be seen by the creator', function () {
+      // create post as user 1
+      cy.contains('New Blog').click()
+      cy.get('input#title').type('A blog created by Cypress')
+      cy.get('input#author').type('Cypress')
+      cy.get('input#url').type('https://www.cypress.io/')
+      cy.contains('Create').click()
+      cy.contains('A blog created by Cypress')
+
+      // ensure user 1 can see delete button
+      cy.contains('View').click()
+      cy.get('button#delete-blog')
+
+      // logout user 1
+      cy.get('button#logout').click()
+
+      // create user 2
+      const user = {
+        name: 'Cesar Salad',
+        username: 'cesarsalad',
+        password: 'asdfasdf'
+      }
+      cy.request('POST', 'http://localhost:3001/api/users/', user)
+
+      // login user 2
+      cy.get('input.username').type('cesarsalad')
+      cy.get('input.password').type('asdfasdf')
+      cy.get('#login-button').click()
+
+      // ensure user 2 cannot see delete button
+      cy.contains('View').click()
+      cy.get('button#delete-blog').should('not.exist')
     })
   })
 })

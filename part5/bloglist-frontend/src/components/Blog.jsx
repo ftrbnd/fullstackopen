@@ -21,7 +21,7 @@ const Blog = ({ blog, user }) => {
         likes: blog.likes + 1
       })
 
-      setCurrentBlog
+      setCurrentBlog(newBlog)
     } catch (exception) {
       console.error(exception)
     }
@@ -51,7 +51,7 @@ const Blog = ({ blog, user }) => {
           <div>{currentBlog.url}</div>
           <div className='likes'>Likes: {currentBlog.likes} <button onClick={handleLike}>Like</button></div>
           <div>{currentBlog.user ? currentBlog.user.username : 'Unknown user'}</div>
-          {currentBlog.user.username === user.username && <button onClick={handleDelete}>Delete</button>}
+          {currentBlog.user.username === user.username && <button onClick={handleDelete} id='delete-blog'>Delete</button>}
         </div>
       }
     </div >

@@ -140,7 +140,7 @@ const App = () => {
             {blogs.sort((a, b) => { return b.likes - a.likes }).map(blog =>
               <Blog key={blog.id} blog={blog} user={user} />
             )}
-            <button onClick={handleLogout}>Logout</button>
+            <button onClick={handleLogout} id='logout'>Logout</button>
 
             <Togglable buttonLabel="New Blog">
               <BlogForm
