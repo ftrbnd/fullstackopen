@@ -21,7 +21,7 @@ const Blog = ({ blog, user }) => {
         likes: blog.likes + 1
       })
 
-      setCurrentBlog(newBlog)
+      setCurrentBlog
     } catch (exception) {
       console.error(exception)
     }
@@ -40,7 +40,7 @@ const Blog = ({ blog, user }) => {
     }
   }
 
-  return (
+  return currentBlog ?
     <div style={blogStyle} data-testid="blog">
       {currentBlog.title} - {currentBlog.author}
       <button onClick={() => setShowBlog(prev => !prev)}>
@@ -54,8 +54,8 @@ const Blog = ({ blog, user }) => {
           {currentBlog.user.username === user.username && <button onClick={handleDelete}>Delete</button>}
         </div>
       }
-    </div>
-  )
+    </div >
+    : <div>Deleted</div>
 }
 
 Blog.propTypes = {
