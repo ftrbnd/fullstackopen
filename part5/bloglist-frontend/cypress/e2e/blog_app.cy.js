@@ -38,21 +38,33 @@ describe('Blog app', function() {
     })
   })
 
-  describe('When logged in', function() {
-    beforeEach(function() {
-      cy.contains('Login').click()
+  describe('When logged in', function () {
+    beforeEach(function () {
       cy.get('input.username').type('giosalad')
       cy.get('input.password').type('asdfasdf')
       cy.get('#login-button').click()
     })
 
-    it('a blog can be created', function() {
+    it('a blog can be created', function () {
       cy.contains('New Blog').click()
       cy.get('input#title').type('A blog created by Cypress')
       cy.get('input#author').type('Cypress')
       cy.get('input#url').type('https://www.cypress.io/')
       cy.contains('Create').click()
       cy.contains('A blog created by Cypress')
+    })
+
+    it.only('a blog can be liked', function () {
+      cy.contains('New Blog').click()
+      cy.get('input#title').type('A blog created by Cypress')
+      cy.get('input#author').type('Cypress')
+      cy.get('input#url').type('https://www.cypress.io/')
+      cy.contains('Create').click()
+
+      cy.contains('A blog created by Cypress').click()
+      cy.contains('View').click()
+      cy.contains('Like').click()
+      cy.contains('Likes: 1')
     })
   })
 })

@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import { deleteBlog } from '../services/blogs'
+import { deleteBlog, updateBlog } from '../services/blogs'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, user, handleLike }) => {
+const Blog = ({ blog, user }) => {
   const [showBlog, setShowBlog] = useState(false)
   const [currentBlog, setCurrentBlog] = useState(blog)
 
@@ -12,6 +12,19 @@ const Blog = ({ blog, user, handleLike }) => {
     border: 'solid',
     borderWidth: 1,
     marginBottom: 5
+  }
+
+  const handleLike = async () => {
+    try {
+      const newBlog = await updateBlog({
+        ...blog,
+        likes: blog.likes + 1
+      })
+
+      setCurrentBlog(newBlog)
+    } catch (exception) {
+      console.error(exception)
+    }
   }
 
   const handleDelete = async () => {
@@ -36,7 +49,7 @@ const Blog = ({ blog, user, handleLike }) => {
       {showBlog &&
         <div className="blogdetails">
           <div>{currentBlog.url}</div>
-          <div className='likes'>{currentBlog.likes} <button onClick={handleLike}>Like</button></div>
+          <div className='likes'>Likes: {currentBlog.likes} <button onClick={handleLike}>Like</button></div>
           <div>{currentBlog.user ? currentBlog.user.username : 'Unknown user'}</div>
           {currentBlog.user.username === user.username && <button onClick={handleDelete}>Delete</button>}
         </div>
