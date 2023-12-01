@@ -41,7 +41,7 @@ const Blog = ({ blog, user }) => {
   }
 
   return currentBlog ?
-    <div style={blogStyle} data-testid="blog">
+    <div style={blogStyle} data-testid="blog" className='blog'>
       {currentBlog.title} - {currentBlog.author}
       <button onClick={() => setShowBlog(prev => !prev)}>
         {showBlog ? 'Hide' : 'View'}

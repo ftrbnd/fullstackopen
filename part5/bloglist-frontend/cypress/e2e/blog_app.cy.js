@@ -1,13 +1,13 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3001/api/testing/reset')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
     const user = {
       name: 'Gio Salad',
       username: 'giosalad',
       password: 'asdfasdf'
     }
-    cy.request('POST', 'http://localhost:3001/api/users/', user)
-    cy.visit('http://localhost:5173')
+    cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -40,79 +40,71 @@ describe('Blog app', function() {
 
   describe('When logged in', function () {
     beforeEach(function () {
-      cy.get('input.username').type('giosalad')
-      cy.get('input.password').type('asdfasdf')
-      cy.get('#login-button').click()
+      cy.login({ username: 'giosalad', password: 'asdfasdf' })
     })
 
     it('a blog can be created', function () {
-      cy.contains('New Blog').click()
-      cy.get('input#title').type('A blog created by Cypress')
-      cy.get('input#author').type('Cypress')
-      cy.get('input#url').type('https://www.cypress.io/')
-      cy.contains('Create').click()
+      cy.createBlog({
+        title: 'A blog created by Cypress',
+        author: 'Cypress',
+        url: 'https://www.cypress.io/',
+      })
       cy.contains('A blog created by Cypress')
     })
 
-    it('a blog can be liked', function () {
-      cy.contains('New Blog').click()
-      cy.get('input#title').type('A blog created by Cypress')
-      cy.get('input#author').type('Cypress')
-      cy.get('input#url').type('https://www.cypress.io/')
-      cy.contains('Create').click()
+    describe('and a blog exists', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'A blog created by Cypress',
+          author: 'Cypress',
+          url: 'https://www.cypress.io/',
+        })
+      })
 
-      cy.contains('A blog created by Cypress').click()
-      cy.contains('View').click()
-      cy.contains('Like').click()
-      cy.contains('Likes: 1')
-    })
+      it('a blog can be liked', function () {
+        cy.contains('A blog created by Cypress').click()
+        cy.contains('View').click()
+        cy.contains('Like').click()
+        cy.contains('Likes: 1')
+      })
 
-    it('a blog can be deleted by the user who created it', function () {
-      cy.contains('New Blog').click()
-      cy.get('input#title').type('A blog created by Cypress')
-      cy.get('input#author').type('Cypress')
-      cy.get('input#url').type('https://www.cypress.io/')
-      cy.contains('Create').click()
+      it('a blog can be deleted by the user who created it', function () {
+        cy.contains('A blog created by Cypress').click()
+        cy.contains('View').click()
+        cy.contains('Delete').click()
 
-      cy.contains('A blog created by Cypress').click()
-      cy.contains('View').click()
-      cy.contains('Delete').click()
+        cy.get('div.blogs').should('not.contain', 'A blog created by Cypress')
+      })
 
-      cy.get('div.blogs').should('not.contain', 'A blog created by Cypress')
-    })
+      it('a blog\'s delete button can only be seen by the creator', function () {
+        // ensure user 1 can see delete button
+        cy.contains('View').click()
+        cy.get('button#delete-blog')
 
-    it.only('a blog\'s delete button can only be seen by the creator', function () {
-      // create post as user 1
-      cy.contains('New Blog').click()
-      cy.get('input#title').type('A blog created by Cypress')
-      cy.get('input#author').type('Cypress')
-      cy.get('input#url').type('https://www.cypress.io/')
-      cy.contains('Create').click()
-      cy.contains('A blog created by Cypress')
+        // logout user 1
+        cy.get('button#logout').click()
 
-      // ensure user 1 can see delete button
-      cy.contains('View').click()
-      cy.get('button#delete-blog')
+        // create user 2
+        const user = {
+          name: 'Cesar Salad',
+          username: 'cesarsalad',
+          password: 'asdfasdf'
+        }
+        cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
 
-      // logout user 1
-      cy.get('button#logout').click()
+        // login user 2
+        cy.get('input.username').type('cesarsalad')
+        cy.get('input.password').type('asdfasdf')
+        cy.get('#login-button').click()
 
-      // create user 2
-      const user = {
-        name: 'Cesar Salad',
-        username: 'cesarsalad',
-        password: 'asdfasdf'
-      }
-      cy.request('POST', 'http://localhost:3001/api/users/', user)
+        // ensure user 2 cannot see delete button
+        cy.contains('View').click()
+        cy.get('button#delete-blog').should('not.exist')
+      })
 
-      // login user 2
-      cy.get('input.username').type('cesarsalad')
-      cy.get('input.password').type('asdfasdf')
-      cy.get('#login-button').click()
+      // it('blogs are sorted by likes', () => {
 
-      // ensure user 2 cannot see delete button
-      cy.contains('View').click()
-      cy.get('button#delete-blog').should('not.exist')
+      // })
     })
   })
 })
