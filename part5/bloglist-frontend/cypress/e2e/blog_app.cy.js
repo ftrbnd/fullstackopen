@@ -101,10 +101,37 @@ describe('Blog app', function() {
         cy.contains('View').click()
         cy.get('button#delete-blog').should('not.exist')
       })
+    })
 
-      // it('blogs are sorted by likes', () => {
+    describe('and multiple blogs exist', function () {
+      beforeEach(function () {
+        cy.createBlog({
+          title: 'Most likes',
+          author: 'Cypress',
+          url: 'https://www.cypress.io/',
+          likes: 100
+        })
 
-      // })
+        cy.createBlog({
+          title: 'Second-most likes',
+          author: 'Cypress',
+          url: 'https://www.cypress.io/',
+          likes: 50
+        })
+
+        cy.createBlog({
+          title: 'Third-most likes',
+          author: 'Cypress',
+          url: 'https://www.cypress.io/',
+          likes: 1
+        })
+      })
+
+      it('blogs are sorted by likes', () => {
+        cy.get('.blog').eq(0).should('contain', 'Most likes')
+        cy.get('.blog').eq(1).should('contain', 'Second-most likes')
+        cy.get('.blog').eq(2).should('contain', 'Third-most likes')
+      })
     })
   })
 })
