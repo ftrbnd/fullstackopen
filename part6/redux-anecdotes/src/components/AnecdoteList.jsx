@@ -18,17 +18,17 @@ const Anecdote = ({ anecdote, handleVote }) => {
 const Anecdotes = () => {
   const dispatch = useDispatch()
   const anecdotes = useSelector(({ anecdotes, filter }) => {
-    console.log('aenc: ', anecdotes);
     if (filter === '') {
       return anecdotes;
     } else {
       return anecdotes.filter(anec => anec.content.toLowerCase().includes(filter.toLowerCase()))
     }
   })
+    console.log(anecdotes);
 
   return(
     <ul>
-      {anecdotes.sort((a, b) => b.votes - a.votes).map(anec =>
+      {anecdotes.map(anec =>
         <Anecdote
           key={anec.id}
           anecdote={anec}
