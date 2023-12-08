@@ -17,6 +17,17 @@ const AnecdoteForm = () => {
   
   const newAnecdoteMutation = useMutation({
     mutationFn: createAnecdote,
+    onError: (err) => {
+      if (err.response.data.error) {
+        notificationDispatch({ type: 'SET', payload: err.response.data.error })
+      } else {
+        notificationDispatch({ type: 'SET', payload: err.message })
+      }
+
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR' })
+      }, 5000);
+    },
     onSuccess: (newAnecdote) => {
       const anecdotes = queryClient.getQueryData(['anecdotes'])
       queryClient.setQueryData(['anecdotes'], anecdotes.concat(newAnecdote))
