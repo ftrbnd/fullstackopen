@@ -2,9 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { getAnecdotes, voteAnecdote } from './services/requests'
+import { useNotificationDispatch } from './hooks/useNotification'
 
 const App = () => {
   const queryClient = useQueryClient()
+  const notificationDispatch = useNotificationDispatch()
 
   const { data: anecdotes, isLoading, isError, error } = useQuery({
     queryKey: ['anecdotes'],
@@ -14,8 +16,13 @@ const App = () => {
 
   const voteMutation = useMutation({
     mutationFn: voteAnecdote,
-    onSuccess: () => {
+    onSuccess: (votedAnecdote) => {
       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+
+      notificationDispatch({ type: 'SET', payload: `Voted for "${votedAnecdote.content}"`})
+      setTimeout(() => {
+        notificationDispatch({ type: 'CLEAR' })
+      }, 5000)
     }
   })
 
