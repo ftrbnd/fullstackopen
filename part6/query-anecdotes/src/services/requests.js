@@ -14,3 +14,11 @@ export const createAnecdote = async (content) => {
     })
     return res.data
 }
+
+export const voteAnecdote = async (anecdote) => {
+    const res = await axios.put(`${baseUrl}/${anecdote.id}`, {
+        ...anecdote,
+        votes: anecdote.votes + 1
+    })
+    return res.data;
+}
