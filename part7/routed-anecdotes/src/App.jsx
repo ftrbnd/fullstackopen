@@ -76,6 +76,14 @@ const CreateNew = ({ addNew }) => {
     })
   }
 
+  const handleReset = (e) => {
+    e.preventDefault()
+
+    content.clear()
+    author.clear()
+    info.reset()
+  }
+
   return (
     <div>
       <h2>create a new anecdote</h2>
@@ -93,6 +101,7 @@ const CreateNew = ({ addNew }) => {
           <input {...info} />
         </div>
         <button type='submit'>create</button>
+        <button onClick={handleReset}>reset</button>
       </form>
     </div>
   )
