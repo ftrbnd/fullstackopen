@@ -1,10 +1,13 @@
 import { useState } from 'react';
-import { deleteBlog, updateBlog } from '../services/blogs';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteThisBlog, likeBlog } from '../reducers/blogsReducer';
+import { displayNotification } from '../reducers/notificationReducer';
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const [showBlog, setShowBlog] = useState(false);
-  const [currentBlog, setCurrentBlog] = useState(blog);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
   const blogStyle = {
     paddingTop: 10,
@@ -16,42 +19,38 @@ const Blog = ({ blog, user }) => {
 
   const handleLike = async () => {
     try {
-      const newBlog = await updateBlog({
-        ...blog,
-        likes: blog.likes + 1
-      });
-
-      setCurrentBlog(newBlog);
+      dispatch(likeBlog(blog));
     } catch (exception) {
+      dispatch(displayNotification('Failed to like blog...'));
       console.error(exception);
     }
   };
 
   const handleDelete = async () => {
     try {
-      const confirm = window.confirm(`Remove blog "${currentBlog.title}" by ${currentBlog.author}?`);
+      const confirm = window.confirm(`Remove blog "${blog.title}" by ${blog.author}?`);
 
       if (confirm) {
-        await deleteBlog(currentBlog);
-        setCurrentBlog(null);
+        dispatch(deleteThisBlog(blog));
       }
     } catch (exception) {
+      dispatch(displayNotification('Failed to delete blog...'));
       console.error(exception);
     }
   };
 
-  return currentBlog ? (
+  return blog ? (
     <div style={blogStyle} data-testid="blog" className="blog">
-      {currentBlog.title} - {currentBlog.author}
+      {blog.title} - {blog.author}
       <button onClick={() => setShowBlog((prev) => !prev)}>{showBlog ? 'Hide' : 'View'}</button>
       {showBlog && (
         <div className="blogdetails">
-          <div>{currentBlog.url}</div>
+          <div>{blog.url}</div>
           <div className="likes">
-            Likes: {currentBlog.likes} <button onClick={handleLike}>Like</button>
+            Likes: {blog.likes} <button onClick={handleLike}>Like</button>
           </div>
-          <div>{currentBlog.user ? currentBlog.user.username : 'Unknown user'}</div>
-          {currentBlog.user.username === user.username && (
+          <div>{blog.user ? blog.user.username : 'Unknown user'}</div>
+          {blog.user.username === user.username && (
             <button onClick={handleDelete} id="delete-blog">
               Delete
             </button>
@@ -65,8 +64,7 @@ const Blog = ({ blog, user }) => {
 };
 
 Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  user: PropTypes.object.isRequired
+  blog: PropTypes.object.isRequired
 };
 
 export default Blog;

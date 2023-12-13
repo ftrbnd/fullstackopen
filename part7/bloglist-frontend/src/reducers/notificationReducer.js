@@ -21,8 +21,6 @@ export const displayNotification = (content, seconds = 3) => {
   return async (dispatch) => {
     dispatch(setNotification(content));
 
-    console.log(content, seconds);
-
     setTimeout(() => {
       dispatch(removeNotification());
     }, seconds * 1000);
