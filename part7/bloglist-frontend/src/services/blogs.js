@@ -30,6 +30,12 @@ const updateBlog = async (newBlog) => {
   return response.data;
 };
 
+const addComment = async (blog, comment) => {
+  const response = await axios.post(`${baseUrl}/${blog.id}/comments`, { text: comment });
+
+  return response.data;
+};
+
 const deleteBlog = async (blog) => {
   const config = {
     headers: { Authorization: token }
@@ -39,4 +45,4 @@ const deleteBlog = async (blog) => {
   return response.data;
 };
 
-export { getAllBlogs, createBlog, updateBlog, deleteBlog, setToken };
+export { getAllBlogs, createBlog, updateBlog, deleteBlog, setToken, addComment };

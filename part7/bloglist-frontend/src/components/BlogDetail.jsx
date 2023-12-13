@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteThisBlog, likeBlog } from '../reducers/blogsReducer';
+import { commentOnBlog, deleteThisBlog, likeBlog } from '../reducers/blogsReducer';
 import { displayNotification } from '../reducers/notificationReducer';
 
 const BlogDetail = ({ blog }) => {
@@ -28,6 +28,22 @@ const BlogDetail = ({ blog }) => {
     }
   };
 
+  const handleComment = async (event) => {
+    event.preventDefault();
+
+    const comment = event.target.comment.value;
+    if (!comment) return;
+
+    event.target.comment.value = '';
+
+    try {
+      dispatch(commentOnBlog(blog, comment));
+    } catch (err) {
+      dispatch(displayNotification('Failed to add comment'));
+      console.error(err);
+    }
+  };
+
   if (!blog) return <p>Blog not found.</p>;
 
   return (
@@ -43,6 +59,21 @@ const BlogDetail = ({ blog }) => {
           Delete
         </button>
       )}
+
+      <h3>Comments</h3>
+      {blog.comments ? (
+        <ul>
+          {blog.comments.map((comment) => (
+            <li key={comment}>{comment}</li>
+          ))}
+        </ul>
+      ) : (
+        <p>No comments for this blog.</p>
+      )}
+      <form onSubmit={handleComment}>
+        <input name="comment" id="comment" placeholder="Comment" />
+        <button type="submit">Add Comment</button>
+      </form>
     </div>
   );
 };

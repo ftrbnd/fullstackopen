@@ -18,8 +18,13 @@ const BlogForm = () => {
     event.target.author.value = '';
     event.target.url.value = '';
 
-    dispatch(createNewBlog(newBlog));
-    dispatch(displayNotification(`Created new blog: "${newBlog.title}"`));
+    try {
+      dispatch(createNewBlog(newBlog));
+      dispatch(displayNotification(`Created new blog: "${newBlog.title}"`));
+    } catch (e) {
+      dispatch(displayNotification('Failed to create blog'));
+      console.error(e);
+    }
   };
 
   return (

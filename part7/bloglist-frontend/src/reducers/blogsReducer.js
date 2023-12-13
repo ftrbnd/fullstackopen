@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createBlog, deleteBlog, getAllBlogs, updateBlog } from '../services/blogs';
+import { addComment, createBlog, deleteBlog, getAllBlogs, updateBlog } from '../services/blogs';
 
 const blogSlice = createSlice({
   name: 'blogs',
@@ -52,6 +52,14 @@ export const deleteThisBlog = (blog) => {
     await deleteBlog(blog);
 
     dispatch(removeBlog(blog));
+  };
+};
+
+export const commentOnBlog = (blog, comment) => {
+  return async (dispatch) => {
+    const newBlog = await addComment(blog, comment);
+
+    dispatch(editBlog(newBlog));
   };
 };
 
