@@ -5,12 +5,39 @@ import { useDispatch, useSelector } from 'react-redux';
 import BlogList from './components/BlogList';
 import { initializeUser, logOutUser } from './reducers/userReducer';
 import LoginForm from './components/LoginForm';
-import { Route, Routes, useMatch } from 'react-router-dom';
+import { Link, Route, Routes, useMatch } from 'react-router-dom';
 import UserList from './components/UserList';
 import User from './components/User';
 import BlogDetail from './components/BlogDetail';
 import { initializeBlogs } from './reducers/blogsReducer';
 import { getUsers } from './reducers/usersReducer';
+
+const Menu = () => {
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+
+  const handleLogout = (event) => {
+    event.preventDefault();
+
+    dispatch(logOutUser());
+  };
+
+  return (
+    <div>
+      <Link to={'/'}>Home</Link>
+      <Link to={'/blogs'}>Blogs</Link>
+      <Link to={'/users'}>Users</Link>
+      {user && (
+        <>
+          <p>{user.username} logged in</p>
+          <button onClick={handleLogout} id="logout">
+            Logout
+          </button>
+        </>
+      )}
+    </div>
+  );
+};
 
 const App = () => {
   const user = useSelector((state) => state.user);
@@ -31,32 +58,20 @@ const App = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleLogout = (event) => {
-    event.preventDefault();
-
-    dispatch(logOutUser());
-  };
-
   return (
     <div>
+      <Menu />
       <h2>Blogs</h2>
       <Notification />
 
       {user ? (
-        <div className="blogs">
-          <p>{user.username} logged in</p>
-          <button onClick={handleLogout} id="logout">
-            Logout
-          </button>
-
-          <Routes>
-            <Route path="/users" element={<UserList />} />
-            <Route path="/users/:id" element={<User user={currentUser} />} />
-            <Route path="/blogs" element={<BlogList />} />
-            <Route path="/blogs/:id" element={<BlogDetail blog={currentBlog} />} />
-            <Route path="/" element={<BlogList />} />
-          </Routes>
-        </div>
+        <Routes>
+          <Route path="/users" element={<UserList />} />
+          <Route path="/users/:id" element={<User user={currentUser} />} />
+          <Route path="/blogs" element={<BlogList />} />
+          <Route path="/blogs/:id" element={<BlogDetail blog={currentBlog} />} />
+          <Route path="/" element={<BlogList />} />
+        </Routes>
       ) : (
         <LoginForm />
       )}

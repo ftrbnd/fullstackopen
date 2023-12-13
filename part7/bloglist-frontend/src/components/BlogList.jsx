@@ -7,7 +7,7 @@ const BlogList = () => {
   const blogs = useSelector((state) => state.blogs);
 
   return (
-    <>
+    <div className="blogs">
       <ul>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} />
@@ -16,7 +16,7 @@ const BlogList = () => {
       <Togglable buttonLabel="New Blog">
         <BlogForm />
       </Togglable>
-    </>
+    </div>
   );
 };
 
