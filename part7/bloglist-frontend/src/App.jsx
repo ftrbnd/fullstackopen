@@ -5,12 +5,13 @@ import { login } from './services/login';
 import './styles.css';
 import BlogForm from './components/BlogForm';
 import Togglable from './components/Togglable';
+import Notification from './components/Notification';
+import { useDispatch } from 'react-redux';
+import { displayNotification } from './reducers/notificationReducer';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null); // has username, token
-  const [notification, setNotification] = useState('');
-  const [notificationType, setNotificationType] = useState('');
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -18,6 +19,8 @@ const App = () => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     async function getBlogs() {
@@ -50,13 +53,8 @@ const App = () => {
       setUsername('');
       setPassword('');
     } catch (exception) {
-      setNotification('Invalid credentials');
-      setNotificationType('error');
+      dispatch(displayNotification('Invalid credentials'));
       console.error(exception);
-
-      setTimeout(() => {
-        setNotification('');
-      }, 5000);
     }
   };
 
@@ -79,23 +77,13 @@ const App = () => {
 
       setBlogs(blogs.concat(newBlog));
 
-      setNotification('Blog created');
-      setNotificationType('success');
+      dispatch(displayNotification('Blog created!'));
       setTitle('');
       setAuthor('');
       setUrl('');
-
-      setTimeout(() => {
-        setNotification('');
-      }, 5000);
     } catch (exception) {
-      setNotification('Invalid blog');
-      setNotificationType('error');
+      dispatch(displayNotification('Invalid blog'));
       console.error(exception);
-
-      setTimeout(() => {
-        setNotification('');
-      }, 5000);
     }
   };
 
@@ -118,7 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
-      {notification && <div className={`${notificationType}`}>{notification}</div>}
+      <Notification />
 
       {user ? (
         <div className="blogs">
