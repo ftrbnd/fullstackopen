@@ -1,16 +1,21 @@
 import { useEffect } from 'react';
 import './styles.css';
-import BlogForm from './components/BlogForm';
-import Togglable from './components/Togglable';
 import Notification from './components/Notification';
 import { useDispatch, useSelector } from 'react-redux';
 import BlogList from './components/BlogList';
 import { initializeUser, logOutUser } from './reducers/userReducer';
 import LoginForm from './components/LoginForm';
+import { Route, Routes, useMatch } from 'react-router-dom';
+import UserList from './components/UserList';
+import User from './components/User';
 
 const App = () => {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  const users = useSelector((state) => state.users);
+  const match = useMatch('/users/:id');
+  const currentUser = match ? users.find((u) => u.id === match.params.id) : null;
 
   useEffect(() => {
     dispatch(initializeUser());
@@ -31,14 +36,15 @@ const App = () => {
       {user ? (
         <div className="blogs">
           <p>{user.username} logged in</p>
-          <BlogList />
           <button onClick={handleLogout} id="logout">
             Logout
           </button>
 
-          <Togglable buttonLabel="New Blog">
-            <BlogForm />
-          </Togglable>
+          <Routes>
+            <Route path="/users" element={<UserList />} />
+            <Route path="/users/:id" element={<User user={currentUser} />} />
+            <Route path="/" element={<BlogList />} />
+          </Routes>
         </div>
       ) : (
         <LoginForm />
