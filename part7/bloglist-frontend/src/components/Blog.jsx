@@ -1,20 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { TableRow, TableCell } from '@mui/material';
 
 const Blog = ({ blog }) => {
-  const navigate = useNavigate();
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
-  };
-
   return blog ? (
-    <div onClick={() => navigate(`/blogs/${blog.id}`)} style={blogStyle} data-testid="blog" className="blog">
-      {blog.title} - {blog.author}
-    </div>
+    <TableRow data-testid="blog" className="blog">
+      <TableCell>
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      </TableCell>
+      <TableCell>{blog.author}</TableCell>
+    </TableRow>
   ) : (
     <div>Deleted</div>
   );

@@ -1,6 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { displayNotification } from '../reducers/notificationReducer';
 import { logInUser } from '../reducers/userReducer';
+import { TextField, Button, Typography } from '@mui/material';
 
 const LoginForm = () => {
   const dispatch = useDispatch();
@@ -27,15 +28,9 @@ const LoginForm = () => {
 
   return (
     <form onSubmit={handleLogin}>
-      <label>
-        Username
-        <input id="username" name="username" placeholder="Username" />
-      </label>
-      <label>
-        Password
-        <input id="password" name="password" placeholder="Password" />
-      </label>
-      <button type="submit">Login</button>
+      <TextField label="username" name="username" id="username" placeholder="Username" />
+      <TextField label="password" name="password" id="password" placeholder="Password" type="password" />
+      <Button type="submit">Login</Button>
     </form>
   );
 };

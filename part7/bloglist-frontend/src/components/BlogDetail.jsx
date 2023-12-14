@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { commentOnBlog, deleteThisBlog, likeBlog } from '../reducers/blogsReducer';
 import { displayNotification } from '../reducers/notificationReducer';
+import { Typography, Button, TextField, List, ListItem } from '@mui/material';
 
 const BlogDetail = ({ blog }) => {
   const dispatch = useDispatch();
@@ -48,31 +49,33 @@ const BlogDetail = ({ blog }) => {
 
   return (
     <div>
-      <h2>{blog.title}</h2>
-      <p>{blog.url}</p>
-      <div className="likes">
-        Likes: {blog.likes} <button onClick={handleLike}>Like</button>
-      </div>
-      <div>{blog.user ? blog.user.username : 'Unknown user'}</div>
+      <Typography variant="h2">{blog.title}</Typography>
+      <Typography variant="subtitle1">{blog.url}</Typography>
+      <Typography variant="subtitle2" className="likes">
+        Likes: {blog.likes} <Button onClick={handleLike}>Like</Button>
+      </Typography>
+      <Typography variant="subtitle2"> Submitted by: {blog.user ? blog.user.username : 'Unknown user'}</Typography>
       {blog.user.username === user.username && (
-        <button onClick={handleDelete} id="delete-blog">
+        <Button onClick={handleDelete} id="delete-blog" variant="contained" color="error">
           Delete
-        </button>
+        </Button>
       )}
 
       <h3>Comments</h3>
       {blog.comments ? (
-        <ul>
+        <List>
           {blog.comments.map((comment) => (
-            <li key={comment}>{comment}</li>
+            <ListItem key={comment}>{comment}</ListItem>
           ))}
-        </ul>
+        </List>
       ) : (
         <p>No comments for this blog.</p>
       )}
       <form onSubmit={handleComment}>
-        <input name="comment" id="comment" placeholder="Comment" />
-        <button type="submit">Add Comment</button>
+        <TextField name="comment" id="comment" placeholder="Comment" />
+        <Button type="submit" variant="contained">
+          Add Comment
+        </Button>
       </form>
     </div>
   );

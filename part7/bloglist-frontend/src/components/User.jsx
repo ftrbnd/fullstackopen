@@ -1,15 +1,21 @@
+import { Typography, List, ListItem } from '@mui/material';
+
 const User = ({ user }) => {
   if (!user) return null;
 
   return (
     <div>
-      <h3>{user.username}</h3>
-      <h4>Added blogs</h4>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
+      <Typography variant="h6">{user.username}</Typography>
+      <Typography variant="subtitle2">Added blogs:</Typography>
+      {user.blogs.length > 0 ? (
+        <List>
+          {user.blogs.map((blog) => (
+            <ListItem key={blog.id}>{blog.title}</ListItem>
+          ))}
+        </List>
+      ) : (
+        <Typography>No blogs to show.</Typography>
+      )}
     </div>
   );
 };

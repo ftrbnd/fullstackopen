@@ -11,6 +11,7 @@ import User from './components/User';
 import BlogDetail from './components/BlogDetail';
 import { initializeBlogs } from './reducers/blogsReducer';
 import { getUsers } from './reducers/usersReducer';
+import { Container, AppBar, Toolbar, IconButton, Button, Typography } from '@mui/material';
 
 const Menu = () => {
   const user = useSelector((state) => state.user);
@@ -23,19 +24,28 @@ const Menu = () => {
   };
 
   return (
-    <div>
-      <Link to={'/'}>Home</Link>
-      <Link to={'/blogs'}>Blogs</Link>
-      <Link to={'/users'}>Users</Link>
-      {user && (
-        <>
-          <p>{user.username} logged in</p>
-          <button onClick={handleLogout} id="logout">
-            Logout
-          </button>
-        </>
-      )}
-    </div>
+    <AppBar position="static">
+      <Toolbar>
+        <IconButton edge="start" color="inherit" aria-label="menu" />
+        <Button color="inherit" component={Link} to="/">
+          Home
+        </Button>
+        <Button color="inherit" component={Link} to="/blogs">
+          Blogs
+        </Button>
+        <Button color="inherit" component={Link} to="/users">
+          Users
+        </Button>
+        {user && (
+          <>
+            <Typography>{user.username} logged in</Typography>
+            <Button color="inherit" onClick={handleLogout} id="logout">
+              Logout
+            </Button>
+          </>
+        )}
+      </Toolbar>
+    </AppBar>
   );
 };
 
@@ -59,9 +69,9 @@ const App = () => {
   }, []);
 
   return (
-    <div>
+    <Container>
       <Menu />
-      <h2>Blogs</h2>
+      <Typography variant="h1">Blogs</Typography>
       <Notification />
 
       {user ? (
@@ -75,7 +85,7 @@ const App = () => {
       ) : (
         <LoginForm />
       )}
-    </div>
+    </Container>
   );
 };
 
