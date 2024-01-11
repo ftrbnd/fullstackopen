@@ -157,8 +157,6 @@ const resolvers = {
 				return Book.find({ genres: args.genre });
 			}
 
-			console.log('books');
-
 			return Book.find({});
 		},
 		allAuthors: async () => Author.find({}),
