@@ -43,11 +43,14 @@ const resolvers = {
 
 			const authorExists = await Author.findOne({ name: args.author });
 			if (!authorExists) {
-				const author = new Author({ name: args.author });
+				const author = new Author({ name: args.author, bookCount: 1 });
 				const newAuthor = await author.save();
 
 				book = new Book({ ...args, author: newAuthor });
 			} else {
+				authorExists.bookCount = authorExists.bookCount + 1;
+				await authorExists.save();
+
 				book = new Book({ ...args, author: authorExists });
 			}
 
@@ -138,14 +141,6 @@ const resolvers = {
 	Subscription: {
 		bookAdded: {
 			subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
-		},
-	},
-	Author: {
-		bookCount: async (root) => {
-			const author = await Author.findOne({ name: root.name });
-			const books = await Book.find({ author });
-
-			return books.length;
 		},
 	},
 	Book: {
