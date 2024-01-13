@@ -1,0 +1,29 @@
+{
+	"name": "ts-exercises",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.ts",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"ts-node": "ts-node",
+		"start": "ts-node index.ts",
+		"dev": "ts-node-dev index.ts",
+		"lint": "eslint --ext .ts .",
+		"bmiCalculator": "ts-node bmiCalculator.ts",
+		"calculateExercises": "ts-node exerciseCalculator.ts"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^6.18.1",
+		"@typescript-eslint/parser": "^6.18.1",
+		"eslint": "^8.56.0",
+		"ts-node": "^10.9.2",
+		"ts-node-dev": "^2.0.0",
+		"typescript": "^5.3.3"
+	},
+	"dependencies": {
+		"express": "^4.18.2"
+	}
+}
