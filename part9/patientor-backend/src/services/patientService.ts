@@ -13,7 +13,7 @@ const getOne = (patientId: string): Patient => {
 		throw new Error(`Patient with id "${patientId}" not found`);
 	}
 
-	return { ...patient, entries: [] };
+	return patient;
 };
 
 const getNonSensitiveEntries = (): NonSensitivePatient[] => {
