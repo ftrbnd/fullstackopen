@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import patientService from '../../services/patients';
 import { useLocation } from 'react-router-dom';
-import { Diagnosis, HealthCheckEntryFormValues, Patient } from '../../types';
+import { Diagnosis, NewJournalEntry, Patient } from '../../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
@@ -41,7 +41,7 @@ const PatientDetails = () => {
 		setError(undefined);
 	};
 
-	const submitNewEntry = async (values: HealthCheckEntryFormValues) => {
+	const submitNewEntry = async (values: NewJournalEntry) => {
 		if (!patient) return setError('This patient does not exist');
 
 		try {
@@ -54,6 +54,7 @@ const PatientDetails = () => {
 
 			setPatient(newPatient);
 			setModalOpen(false);
+			setError(undefined);
 		} catch (e: unknown) {
 			if (axios.isAxiosError(e)) {
 				if (e?.response?.data && typeof e?.response?.data === 'string') {
@@ -111,7 +112,7 @@ const PatientDetails = () => {
 				<Button
 					variant='contained'
 					onClick={() => openModal()}>
-					Add New HealthCheck Entry
+					Add New Entry
 				</Button>
 			</div>
 		</div>

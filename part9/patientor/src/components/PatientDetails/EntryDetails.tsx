@@ -6,6 +6,9 @@ import {
 	HospitalEntry,
 	OccupationalHealthcareEntry,
 } from '../../types';
+import MonitorHeartIcon from '@mui/icons-material/MonitorHeart';
+import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 
 interface EntryProps {
 	entry: Entry;
@@ -13,12 +16,18 @@ interface EntryProps {
 }
 
 const HealthCheckEntryDetail = ({ entry }: { entry: HealthCheckEntry }) => {
-	return <div>Health check rating: {entry.healthCheckRating}</div>;
+	return (
+		<div>
+			<MonitorHeartIcon />
+			Health check rating: {entry.healthCheckRating}
+		</div>
+	);
 };
 
 const HospitalEntryDetail = ({ entry }: { entry: HospitalEntry }) => {
 	return (
 		<div>
+			<LocalHospitalIcon />
 			Discharged: {entry.discharge.date} - {entry.discharge.criteria}
 		</div>
 	);
@@ -31,6 +40,7 @@ const OccupationalHealthcareDetail = ({
 }) => {
 	return (
 		<div>
+			<BusinessCenterIcon />
 			<p>Employed by: {entry.employerName}</p>
 			{entry.sickLeave && (
 				<p>
@@ -41,11 +51,11 @@ const OccupationalHealthcareDetail = ({
 	);
 };
 
-const EntryDetails = ({ entry, diagnoses }: EntryProps) => {
-	const assertNever = (value: never): never => {
-		throw new Error(`Unhandled entry type: ${JSON.stringify(value)}`);
-	};
+const assertNever = (value: never): never => {
+	throw new Error(`Unhandled entry type: ${JSON.stringify(value)}`);
+};
 
+const EntryDetails = ({ entry, diagnoses }: EntryProps) => {
 	const EntryType = () => {
 		switch (entry.type) {
 			case 'HealthCheck':
