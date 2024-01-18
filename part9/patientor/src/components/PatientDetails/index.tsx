@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
 import patientService from '../../services/patients';
 import { useLocation } from 'react-router-dom';
-import { Diagnosis, Patient } from '../../types';
+import { Diagnosis, HealthCheckEntryFormValues, Patient } from '../../types';
 import MaleIcon from '@mui/icons-material/Male';
 import FemaleIcon from '@mui/icons-material/Female';
 import TransgenderIcon from '@mui/icons-material/Transgender';
 import diagnosisService from '../../services/diagnoses';
 import EntryDetails from './EntryDetails';
+import axios from 'axios';
+import { Button } from '@mui/material';
+import AddEntryModal from '../AddEntryModal';
 
 const PatientDetails = () => {
 	const [patient, setPatient] = useState<Patient | null>(null);
 	const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
+	const [modalOpen, setModalOpen] = useState<boolean>(false);
+	const [error, setError] = useState<string>();
 
 	const location = useLocation();
 
@@ -28,6 +33,45 @@ const PatientDetails = () => {
 		fetchPatient();
 		fetchDiagnoses();
 	}, [location.state.id]);
+
+	const openModal = (): void => setModalOpen(true);
+
+	const closeModal = (): void => {
+		setModalOpen(false);
+		setError(undefined);
+	};
+
+	const submitNewEntry = async (values: HealthCheckEntryFormValues) => {
+		if (!patient) return setError('This patient does not exist');
+
+		try {
+			const entry = await patientService.addEntry(patient.id, values);
+
+			const newPatient = {
+				...patient,
+				entries: patient.entries.concat(entry),
+			};
+
+			setPatient(newPatient);
+			setModalOpen(false);
+		} catch (e: unknown) {
+			if (axios.isAxiosError(e)) {
+				if (e?.response?.data && typeof e?.response?.data === 'string') {
+					const message = e.response.data.replace(
+						'Something went wrong. Error: ',
+						''
+					);
+					console.error(message);
+					setError(message);
+				} else {
+					setError('Unrecognized axios error');
+				}
+			} else {
+				console.error('Unknown error', e);
+				setError('Unknown error');
+			}
+		}
+	};
 
 	if (!patient) return <div>Patient not found</div>;
 
@@ -57,6 +101,18 @@ const PatientDetails = () => {
 						diagnoses={diagnoses}
 					/>
 				))}
+
+				<AddEntryModal
+					modalOpen={modalOpen}
+					onSubmit={submitNewEntry}
+					error={error}
+					onClose={closeModal}
+				/>
+				<Button
+					variant='contained'
+					onClick={() => openModal()}>
+					Add New HealthCheck Entry
+				</Button>
 			</div>
 		</div>
 	);
