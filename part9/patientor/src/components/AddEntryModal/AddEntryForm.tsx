@@ -1,5 +1,4 @@
 import { useState, SyntheticEvent } from 'react';
-
 import {
 	TextField,
 	InputLabel,
@@ -10,14 +9,16 @@ import {
 	SelectChangeEvent,
 	Tabs,
 	Tab,
+	OutlinedInput,
+	FormControl,
 } from '@mui/material';
-
-import { NewJournalEntry, HealthCheckRating } from '../../types';
+import { NewJournalEntry, HealthCheckRating, Diagnosis } from '../../types';
 import CustomTabPanel from './CustomTabPanel';
 
 interface Props {
 	onCancel: () => void;
 	onSubmit: (values: NewJournalEntry) => void;
+	diagnoses: Diagnosis[];
 }
 
 interface HealthCheckRatingOption {
@@ -41,11 +42,11 @@ function a11yProps(index: number) {
 	};
 }
 
-const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
+const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 	const [description, setDescription] = useState('');
 	const [date, setDate] = useState('');
 	const [specialist, setSpecialist] = useState('');
-	const [diagnosisCodes, setDiagnosisCodes] = useState('');
+	const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
 	const [healthCheckRating, setHealthCheckRating] = useState(
 		HealthCheckRating.Healthy
@@ -75,6 +76,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 		}
 	};
 
+	const handleDiagnosisCodeChange = (
+		event: SelectChangeEvent<typeof diagnosisCodes>
+	) => {
+		const value = event.target.value;
+		setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+	};
+
 	const addEntry = (event: SyntheticEvent) => {
 		event.preventDefault();
 
@@ -84,7 +92,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 					description,
 					date,
 					specialist,
-					diagnosisCodes: diagnosisCodes.split(','),
+					diagnosisCodes: diagnosisCodes,
 					type: 'HealthCheck',
 					healthCheckRating,
 				});
@@ -94,7 +102,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 					description,
 					date,
 					specialist,
-					diagnosisCodes: diagnosisCodes.split(','),
+					diagnosisCodes: diagnosisCodes,
 					type: 'OccupationalHealthcare',
 					employerName,
 					sickLeave: {
@@ -108,7 +116,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 					description,
 					date,
 					specialist,
-					diagnosisCodes: diagnosisCodes.split(','),
+					diagnosisCodes: diagnosisCodes,
 					type: 'Hospital',
 					discharge: {
 						date: dischargeDate,
@@ -140,12 +148,26 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
 					value={specialist}
 					onChange={({ target }) => setSpecialist(target.value)}
 				/>
-				<TextField
-					label='Diagnosis codes'
-					fullWidth
-					value={diagnosisCodes}
-					onChange={({ target }) => setDiagnosisCodes(target.value)}
-				/>
+
+				<FormControl fullWidth>
+					<InputLabel id='diagnosis-codes-label'>Diagnosis Codes</InputLabel>
+					<Select
+						labelId='diagnosis-codes-label'
+						id='diagnosis-codes'
+						multiple
+						fullWidth
+						value={diagnosisCodes}
+						onChange={handleDiagnosisCodeChange}
+						input={<OutlinedInput label='Diagnosis' />}>
+						{diagnoses.map((diagnosis) => (
+							<MenuItem
+								key={diagnosis.code}
+								value={diagnosis.code}>
+								{diagnosis.code}
+							</MenuItem>
+						))}
+					</Select>
+				</FormControl>
 
 				<Tabs
 					value={tab}

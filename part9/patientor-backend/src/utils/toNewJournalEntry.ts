@@ -170,7 +170,7 @@ const toNewJournalEntry = (object: unknown): NewJournalEntry => {
 			description: parseString(object.description),
 			date: parseDate(object.date),
 			specialist: parseString(object.specialist),
-			diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
+			diagnosisCodes: parseDiagnosisCodes(object),
 			...getRestOfEntry(object),
 		};
 

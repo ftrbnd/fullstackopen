@@ -108,6 +108,7 @@ const PatientDetails = () => {
 					onSubmit={submitNewEntry}
 					error={error}
 					onClose={closeModal}
+					diagnoses={diagnoses}
 				/>
 				<Button
 					variant='contained'
