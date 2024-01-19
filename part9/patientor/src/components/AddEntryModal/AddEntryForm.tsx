@@ -11,6 +11,7 @@ import {
 	Tab,
 	OutlinedInput,
 	FormControl,
+	Input,
 } from '@mui/material';
 import { NewJournalEntry, HealthCheckRating, Diagnosis } from '../../types';
 import CustomTabPanel from './CustomTabPanel';
@@ -135,12 +136,12 @@ const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 					value={description}
 					onChange={({ target }) => setDescription(target.value)}
 				/>
-				<TextField
-					label='Date'
-					placeholder='YYYY-MM-DD'
-					fullWidth
+				<Input
+					aria-label='Date'
+					type='date'
 					value={date}
 					onChange={({ target }) => setDate(target.value)}
+					sx={{ m: 2 }}
 				/>
 				<TextField
 					label='Specialist'
@@ -214,31 +215,40 @@ const AddEntryForm = ({ onCancel, onSubmit, diagnoses }: Props) => {
 						value={employerName}
 						onChange={({ target }) => setEmployerName(target.value)}
 					/>
-					<TextField
-						label='Sick Leave Start'
-						placeholder='YYYY-MM-DD'
-						fullWidth
-						value={sickLeaveStart}
-						onChange={({ target }) => setSickLeaveStart(target.value)}
-					/>
-					<TextField
-						label='Sick Leave End'
-						placeholder='YYYY-MM-DD'
-						fullWidth
-						value={sickLeaveEnd}
-						onChange={({ target }) => setSickLeaveEnd(target.value)}
-					/>
+					<FormControl>
+						<InputLabel id='sick-leave-start'>Sick Leave Start</InputLabel>
+						<Input
+							aria-label='Sick Leave Start'
+							type='date'
+							value={sickLeaveStart}
+							onChange={({ target }) => setSickLeaveStart(target.value)}
+							sx={{ m: 2 }}
+						/>
+					</FormControl>
+					<FormControl>
+						<InputLabel id='sick-leave-end'>Sick Leave End</InputLabel>
+						<Input
+							aria-label='Sick Leave End'
+							type='date'
+							value={sickLeaveEnd}
+							onChange={({ target }) => setSickLeaveEnd(target.value)}
+							sx={{ m: 2 }}
+						/>
+					</FormControl>
 				</CustomTabPanel>
 				<CustomTabPanel
 					value={tab}
 					index={2}>
-					<TextField
-						label='Discharge Date'
-						placeholder='YYYY-MM-DD'
-						fullWidth
-						value={dischargeDate}
-						onChange={({ target }) => setDischargeDate(target.value)}
-					/>
+					<FormControl>
+						<InputLabel id='Discharge Date'>Discharge Date</InputLabel>
+						<Input
+							aria-label='Discharge Date'
+							type='date'
+							value={dischargeDate}
+							onChange={({ target }) => setDischargeDate(target.value)}
+							sx={{ m: 2 }}
+						/>
+					</FormControl>
 					<TextField
 						label='Discharge Criteria'
 						fullWidth
