@@ -1,7 +1,7 @@
 import { View, StyleSheet, Image } from 'react-native';
 import CountItem from './CountItem';
 import LanguageTag from './LanguageTag';
-import Text from './Text';
+import Text from '../Text';
 
 const styles = StyleSheet.create({
 	container: {
