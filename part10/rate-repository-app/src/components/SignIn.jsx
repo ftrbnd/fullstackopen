@@ -2,7 +2,7 @@ import { View, Pressable, StyleSheet } from 'react-native';
 import FormikTextInput from './FormikTextInput';
 import Text from './Text';
 import { Formik } from 'formik';
-import theme from '../theme';
+import theme from '../utils/theme';
 import * as yup from 'yup';
 
 const initialValues = {
