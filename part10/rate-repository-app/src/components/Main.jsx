@@ -4,6 +4,7 @@ import RepositoryList from './RepositoryList';
 import AppBar from './AppBar';
 import theme from '../utils/theme';
 import SignIn from './SignIn';
+import RepositoryItem from './RepositoryItem';
 
 const styles = StyleSheet.create({
 	container: {
@@ -25,6 +26,10 @@ const Main = () => {
 				<Route
 					path='/signin'
 					element={<SignIn />}
+				/>
+				<Route
+					path='/repositories/:id'
+					element={<RepositoryItem />}
 				/>
 				<Route
 					path='*'

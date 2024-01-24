@@ -35,7 +35,7 @@ const AppBar = () => {
 					text={'Repositories'}
 					to={'/'}
 				/>
-				{data.me ? (
+				{data && data.me ? (
 					<AppBarTab
 						text={'Sign Out'}
 						onPress={() => signOut()}

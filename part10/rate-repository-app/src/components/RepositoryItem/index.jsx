@@ -1,7 +1,12 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Pressable } from 'react-native';
 import CountItem from './CountItem';
 import LanguageTag from './LanguageTag';
 import Text from '../Text';
+import { useParams } from 'react-router-native';
+import { useQuery } from '@apollo/client';
+import { GET_REPOSITORY } from '../../graphql/queries';
+import * as Linking from 'expo-linking';
+import theme from '../../utils/theme';
 
 const styles = StyleSheet.create({
 	container: {
@@ -31,10 +36,20 @@ const styles = StyleSheet.create({
 	counts: {
 		display: 'flex',
 		flexDirection: 'row',
+		marginBottom: 8,
+	},
+	button: {
+		backgroundColor: theme.colors.primary,
+		padding: 12,
+		borderRadius: 5,
+	},
+	text: {
+		color: 'white',
+		alignSelf: 'center',
 	},
 });
 
-const RepositoryItem = ({ repository }) => {
+const RepositoryDetails = ({ repository, children }) => {
 	return (
 		<View
 			testID='repositoryItem'
@@ -78,8 +93,50 @@ const RepositoryItem = ({ repository }) => {
 					count={repository.reviewCount}
 				/>
 			</View>
+
+			{children}
 		</View>
 	);
+};
+
+const RepositoryView = ({ id }) => {
+	const { data, loading } = useQuery(GET_REPOSITORY, {
+		variables: { id },
+	});
+
+	const openLink = async () => {
+		await Linking.openURL(data.repository.url);
+	};
+
+	if (loading) {
+		return (
+			<View>
+				<Text>Getting repository...</Text>
+			</View>
+		);
+	}
+
+	return (
+		<RepositoryDetails repository={data.repository}>
+			<Pressable
+				onPress={openLink}
+				style={styles.button}>
+				<Text
+					style={styles.text}
+					fontWeight={'bold'}>
+					Open in GitHub
+				</Text>
+			</Pressable>
+		</RepositoryDetails>
+	);
+};
+
+const RepositoryItem = ({ repository }) => {
+	const { id } = useParams();
+
+	if (id) return <RepositoryView id={id} />;
+
+	return <RepositoryDetails repository={repository} />;
 };
 
 export default RepositoryItem;
