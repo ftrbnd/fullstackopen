@@ -8,11 +8,12 @@ const styles = StyleSheet.create({
 	},
 });
 
-const TextInput = ({ style, error, ...props }) => {
+const TextInput = ({ style, placeholder, error, ...props }) => {
 	const textInputStyle = [style, error && styles.errorBorder];
 
 	return (
 		<NativeTextInput
+			placeholder={placeholder}
 			style={textInputStyle}
 			{...props}
 		/>

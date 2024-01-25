@@ -36,11 +36,17 @@ const AppBar = () => {
 					to={'/'}
 				/>
 				{data && data.me ? (
-					<AppBarTab
-						text={'Sign Out'}
-						onPress={() => signOut()}
-						to={'/'}
-					/>
+					<>
+						<AppBarTab
+							text={'Create Review'}
+							to={'/review'}
+						/>
+						<AppBarTab
+							text={'Sign Out'}
+							onPress={() => signOut()}
+							to={'/'}
+						/>
+					</>
 				) : (
 					<AppBarTab
 						text={'Sign In'}

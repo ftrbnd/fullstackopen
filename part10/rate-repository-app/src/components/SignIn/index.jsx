@@ -40,10 +40,14 @@ const SignInForm = ({ onSubmit }) => {
 			<FormikTextInput
 				name={'username'}
 				placeholder={'Username'}
+				autoCorrect={false}
+				autoCapitalize={false}
 			/>
 			<FormikTextInput
 				name={'password'}
 				placeholder={'Password'}
+				autoCorrect={false}
+				autoCapitalize={false}
 				secureTextEntry
 			/>
 			<Pressable
