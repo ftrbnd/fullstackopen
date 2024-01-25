@@ -13,3 +13,23 @@ export const REPOSITORY_DETAILS = gql`
 		reviewCount
 	}
 `;
+
+export const REPOSITORY_PAGE = gql`
+	fragment RepositoryPage on Repository {
+		url
+		reviews {
+			edges {
+				node {
+					id
+					text
+					rating
+					createdAt
+					user {
+						id
+						username
+					}
+				}
+			}
+		}
+	}
+`;

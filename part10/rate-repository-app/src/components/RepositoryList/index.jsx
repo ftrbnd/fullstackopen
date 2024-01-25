@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-native';
 const styles = StyleSheet.create({
 	separator: {
 		height: 10,
+		backgroundColor: 'lightgrey',
 	},
 });
 

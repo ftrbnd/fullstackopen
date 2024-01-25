@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Pressable } from 'react-native';
+import { View, StyleSheet, Image, Pressable, FlatList } from 'react-native';
 import CountItem from './CountItem';
 import LanguageTag from './LanguageTag';
 import Text from '../Text';
@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/client';
 import { GET_REPOSITORY } from '../../graphql/queries';
 import * as Linking from 'expo-linking';
 import theme from '../../utils/theme';
+import { format } from 'date-fns';
 
 const styles = StyleSheet.create({
 	container: {
@@ -46,6 +47,37 @@ const styles = StyleSheet.create({
 	text: {
 		color: 'white',
 		alignSelf: 'center',
+	},
+	review: {
+		display: 'flex',
+		flexDirection: 'row',
+		padding: 8,
+	},
+	circle: {
+		alignSelf: 'flex-start',
+		width: 50,
+		height: 50,
+		margin: 8,
+		borderRadius: 25,
+		borderWidth: 2,
+		borderColor: theme.colors.primary,
+		display: 'flex',
+		justifyContent: 'center',
+	},
+	rating: {
+		textAlign: 'center',
+		color: theme.colors.primary,
+	},
+	header: {
+		display: 'flex',
+		paddingVertical: 8,
+	},
+	content: {
+		flex: 1,
+	},
+	separator: {
+		height: 10,
+		backgroundColor: 'lightgrey',
 	},
 });
 
@@ -99,6 +131,39 @@ const RepositoryDetails = ({ repository, children }) => {
 	);
 };
 
+const ReviewItem = ({ review }) => {
+	// Single review item
+	return (
+		<View style={styles.review}>
+			<View style={styles.circle}>
+				<Text
+					style={styles.rating}
+					fontSize={'subheading'}
+					fontWeight={'bold'}>
+					{review.rating}
+				</Text>
+			</View>
+			<View style={styles.content}>
+				<View style={styles.header}>
+					<Text
+						fontSize={'heading'}
+						fontWeight={'bold'}>
+						{review.user.username}
+					</Text>
+					<Text
+						fontSize={'subheading'}
+						color={'textSecondary'}>
+						{format(new Date(review.createdAt), 'dd.MM.yyyy')}
+					</Text>
+				</View>
+				<Text fontSize={'body'}>{review.text}</Text>
+			</View>
+		</View>
+	);
+};
+
+const ItemSeparator = () => <View style={styles.separator} />;
+
 const RepositoryView = ({ id }) => {
 	const { data, loading } = useQuery(GET_REPOSITORY, {
 		variables: { id },
@@ -116,18 +181,30 @@ const RepositoryView = ({ id }) => {
 		);
 	}
 
+	const reviewNodes = data.repository.reviews.edges
+		? data.repository.reviews.edges.map((edge) => edge.node)
+		: [];
+
 	return (
-		<RepositoryDetails repository={data.repository}>
-			<Pressable
-				onPress={openLink}
-				style={styles.button}>
-				<Text
-					style={styles.text}
-					fontWeight={'bold'}>
-					Open in GitHub
-				</Text>
-			</Pressable>
-		</RepositoryDetails>
+		<FlatList
+			data={reviewNodes}
+			renderItem={({ item }) => <ReviewItem review={item} />}
+			keyExtractor={({ id }) => id}
+			ItemSeparatorComponent={ItemSeparator}
+			ListHeaderComponent={() => (
+				<RepositoryDetails repository={data.repository}>
+					<Pressable
+						onPress={openLink}
+						style={styles.button}>
+						<Text
+							style={styles.text}
+							fontWeight={'bold'}>
+							Open in GitHub
+						</Text>
+					</Pressable>
+				</RepositoryDetails>
+			)}
+		/>
 	);
 };
 

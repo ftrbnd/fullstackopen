@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { REPOSITORY_DETAILS } from './fragments';
+import { REPOSITORY_DETAILS, REPOSITORY_PAGE } from './fragments';
 
 export const GET_REPOSITORIES = gql`
 	query Repositories {
@@ -14,14 +14,16 @@ export const GET_REPOSITORIES = gql`
 	${REPOSITORY_DETAILS}
 `;
 
+// used when tapping on a single repository on the home page
 export const GET_REPOSITORY = gql`
 	query Repository($id: ID!) {
 		repository(id: $id) {
 			...RepositoryDetails
-			url
+			...RepositoryPage
 		}
 	}
 	${REPOSITORY_DETAILS}
+	${REPOSITORY_PAGE}
 `;
 
 export const ME = gql`
