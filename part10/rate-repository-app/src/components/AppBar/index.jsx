@@ -2,9 +2,9 @@ import { View, StyleSheet, ScrollView } from 'react-native';
 import Constants from 'expo-constants';
 import AppBarTab from './AppBarTab';
 import theme from '../../utils/theme';
-import { useApolloClient, useQuery } from '@apollo/client';
-import { ME } from '../../graphql/queries';
+import { useApolloClient } from '@apollo/client';
 import useAuthStorage from '../../hooks/useAuthStorage';
+import useCurrentUser from '../../hooks/useCurrentUser';
 
 const styles = StyleSheet.create({
 	container: {
@@ -17,9 +17,7 @@ const styles = StyleSheet.create({
 });
 
 const AppBar = () => {
-	const { data } = useQuery(ME, {
-		fetchPolicy: 'cache-and-network',
-	});
+	const { currentUser } = useCurrentUser({ includeReviews: false });
 	const authStorage = useAuthStorage();
 	const apolloClient = useApolloClient();
 
@@ -35,11 +33,15 @@ const AppBar = () => {
 					text={'Repositories'}
 					to={'/'}
 				/>
-				{data && data.me ? (
+				{currentUser ? (
 					<>
 						<AppBarTab
 							text={'Create Review'}
 							to={'/review'}
+						/>
+						<AppBarTab
+							text={'My Reviews'}
+							to={'/reviews'}
 						/>
 						<AppBarTab
 							text={'Sign Out'}

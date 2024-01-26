@@ -7,7 +7,7 @@ import { useQuery } from '@apollo/client';
 import { GET_REPOSITORY } from '../../graphql/queries';
 import * as Linking from 'expo-linking';
 import theme from '../../utils/theme';
-import { format } from 'date-fns';
+import ReviewItem from '../ReviewItem';
 
 const styles = StyleSheet.create({
 	container: {
@@ -127,37 +127,6 @@ const RepositoryDetails = ({ repository, children }) => {
 			</View>
 
 			{children}
-		</View>
-	);
-};
-
-const ReviewItem = ({ review }) => {
-	// Single review item
-	return (
-		<View style={styles.review}>
-			<View style={styles.circle}>
-				<Text
-					style={styles.rating}
-					fontSize={'subheading'}
-					fontWeight={'bold'}>
-					{review.rating}
-				</Text>
-			</View>
-			<View style={styles.content}>
-				<View style={styles.header}>
-					<Text
-						fontSize={'heading'}
-						fontWeight={'bold'}>
-						{review.user.username}
-					</Text>
-					<Text
-						fontSize={'subheading'}
-						color={'textSecondary'}>
-						{format(new Date(review.createdAt), 'dd.MM.yyyy')}
-					</Text>
-				</View>
-				<Text fontSize={'body'}>{review.text}</Text>
-			</View>
 		</View>
 	);
 };

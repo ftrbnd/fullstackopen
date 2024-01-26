@@ -33,3 +33,19 @@ export const REPOSITORY_PAGE = gql`
 		}
 	}
 `;
+
+export const REVIEW_DETAILS = gql`
+	fragment ReviewDetails on Review {
+		repository {
+			id
+			ownerName
+			fullName
+		}
+		user {
+			username
+		}
+		rating
+		text
+		createdAt
+	}
+`;
