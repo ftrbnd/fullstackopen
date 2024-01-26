@@ -93,6 +93,7 @@ export const RepositoryListContainer = ({
 	repositories,
 	refetch,
 	openSingleView,
+	onEndReached,
 }) => {
 	const repositoryNodes = repositories
 		? repositories.edges.map((edge) => edge.node)
@@ -113,23 +114,25 @@ export const RepositoryListContainer = ({
 					<RepositoryItem repository={item} />
 				</Pressable>
 			)}
+			onEndReached={onEndReached}
+			onEndReachedThreshold={0.75}
 		/>
 	);
 };
 
 const RepositoryList = () => {
-	const { repositories, refetch } = useRepositories();
+	const { repositories, refetch, fetchMore } = useRepositories({ first: 8 });
 	const navigate = useNavigate();
 
-	const openSingleView = (id) => {
-		navigate(`/repositories/${id}`);
-	};
+	const openSingleView = (id) => navigate(`/repositories/${id}`);
+	const onEndReached = () => fetchMore();
 
 	return (
 		<RepositoryListContainer
 			repositories={repositories}
 			refetch={refetch}
 			openSingleView={openSingleView}
+			onEndReached={onEndReached}
 		/>
 	);
 };

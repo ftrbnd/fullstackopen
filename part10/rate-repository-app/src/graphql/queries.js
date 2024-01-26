@@ -10,17 +10,27 @@ export const GET_REPOSITORIES = gql`
 		$orderBy: AllRepositoriesOrderBy
 		$orderDirection: OrderDirection
 		$searchKeyword: String
+		$first: Int
+		$after: String
 	) {
 		repositories(
 			orderBy: $orderBy
 			orderDirection: $orderDirection
 			searchKeyword: $searchKeyword
+			first: $first
+			after: $after
 		) {
 			edges {
 				node {
 					...RepositoryDetails
 				}
 			}
+			pageInfo {
+				endCursor
+				startCursor
+				hasNextPage
+			}
+			totalCount
 		}
 	}
 	${REPOSITORY_DETAILS}
@@ -28,7 +38,7 @@ export const GET_REPOSITORIES = gql`
 
 // used when tapping on a single repository on the home page
 export const GET_REPOSITORY = gql`
-	query Repository($id: ID!) {
+	query Repository($id: ID!, $first: Int, $after: String) {
 		repository(id: $id) {
 			...RepositoryDetails
 			...RepositoryPage

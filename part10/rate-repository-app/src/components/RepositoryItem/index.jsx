@@ -134,8 +134,8 @@ const RepositoryDetails = ({ repository, children }) => {
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const RepositoryView = ({ id }) => {
-	const { data, loading } = useQuery(GET_REPOSITORY, {
-		variables: { id },
+	const { data, loading, fetchMore } = useQuery(GET_REPOSITORY, {
+		variables: { id, first: 2 },
 	});
 
 	const openLink = async () => {
@@ -153,6 +153,20 @@ const RepositoryView = ({ id }) => {
 	const reviewNodes = data.repository.reviews.edges
 		? data.repository.reviews.edges.map((edge) => edge.node)
 		: [];
+
+	const handleFetchMore = () => {
+		const canFetchMore =
+			!loading && data?.repository.reviews.pageInfo.hasNextPage;
+
+		if (!canFetchMore) return;
+
+		fetchMore({
+			variables: {
+				first: 2,
+				after: data.repository.reviews.pageInfo.endCursor,
+			},
+		});
+	};
 
 	return (
 		<FlatList
@@ -173,6 +187,8 @@ const RepositoryView = ({ id }) => {
 					</Pressable>
 				</RepositoryDetails>
 			)}
+			onEndReached={handleFetchMore}
+			onEndReachedThreshold={0.75}
 		/>
 	);
 };
