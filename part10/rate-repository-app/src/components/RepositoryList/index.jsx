@@ -2,91 +2,90 @@ import { FlatList, View, StyleSheet, Pressable } from 'react-native';
 import RepositoryItem from '../RepositoryItem';
 import useRepositories from '../../hooks/useRepositories';
 import { useNavigate } from 'react-router-native';
-import { Picker } from '@react-native-picker/picker';
 import { useEffect, useState } from 'react';
-import Text from '../Text';
+import { Button, Menu, Divider, Searchbar } from 'react-native-paper';
+import { useDebounce } from 'use-debounce';
 
 const styles = StyleSheet.create({
 	separator: {
 		height: 10,
 		backgroundColor: 'lightgrey',
 	},
-	sort: {
-		backgroundColor: 'lightgrey',
-		textAlign: 'center',
-		padding: 16,
+	search: {
+		margin: 8,
 	},
 });
 
 const ItemSeparator = () => <View style={styles.separator} />;
 
 const SortSelection = ({ refetch }) => {
-	const [showPicker, setShowPicker] = useState(false);
-	const [selection, setSelection] = useState('CREATED_AT');
+	const [visible, setVisible] = useState(false);
 
-	useEffect(() => {
-		switch (selection) {
-			case 'CREATED_AT':
+	const openMenu = () => setVisible(true);
+	const closeMenu = () => setVisible(false);
+
+	const handleSelection = (sortingValue) => {
+		switch (sortingValue) {
+			case 'LATEST':
 				refetch({ orderBy: 'CREATED_AT', orderDirection: 'DESC' });
 				break;
-			case 'HIGHEST_RATING_AVERAGE':
+			case 'HIGHEST':
 				refetch({ orderBy: 'RATING_AVERAGE', orderDirection: 'DESC' });
 				break;
-			case 'LOWEST_RATING_AVERAGE':
+			case 'LOWEST':
 				refetch({ orderBy: 'RATING_AVERAGE', orderDirection: 'ASC' });
 				break;
 			default:
-				refetch({ orderBy: 'CREATED_AT', orderDirection: 'DESC' });
+				refetch();
 		}
 
-		setShowPicker(false);
-	}, [selection]);
-
-	const togglePicker = () => {
-		setShowPicker((prev) => !prev);
-	};
-
-	const currentSorting = () => {
-		switch (selection) {
-			case 'CREATED_AT':
-				return 'Latest repositories';
-			case 'HIGHEST_RATING_AVERAGE':
-				return 'Highest rated repositories';
-			case 'LOWEST_RATING_AVERAGE':
-				return 'Lowest rated repositories';
-			default:
-				return 'Latest repositories';
-		}
+		closeMenu();
 	};
 
 	return (
-		<View>
-			<Pressable onPress={togglePicker}>
-				<Text
-					fontWeight={'bold'}
-					style={styles.sort}>
-					Sort by: {currentSorting()}
-				</Text>
-			</Pressable>
-			{showPicker && (
-				<Picker
-					selectedValue={selection}
-					onValueChange={(itemValue) => setSelection(itemValue)}>
-					<Picker.Item
-						label='Latest repositories'
-						value='CREATED_AT'
-					/>
-					<Picker.Item
-						label='Highest rated repositories'
-						value='HIGHEST_RATING_AVERAGE'
-					/>
-					<Picker.Item
-						label='Lowest rated repositories'
-						value='LOWEST_RATING_AVERAGE'
-					/>
-				</Picker>
-			)}
+		<View
+			style={{
+				flexDirection: 'row',
+				justifyContent: 'center',
+			}}>
+			<Menu
+				visible={visible}
+				onDismiss={closeMenu}
+				anchor={<Button onPress={openMenu}>Sort By</Button>}>
+				<Menu.Item
+					onPress={() => handleSelection('LATEST')}
+					title='Latest repositories'
+				/>
+				<Menu.Item
+					onPress={() => handleSelection('HIGHEST')}
+					title='Highest rated repositories'
+				/>
+				<Divider />
+				<Menu.Item
+					onPress={() => handleSelection('LOWEST')}
+					title='Lowest rated repositories'
+				/>
+			</Menu>
 		</View>
+	);
+};
+
+const SearchRepositories = ({ refetch }) => {
+	const [searchQuery, setSearchQuery] = useState('');
+	const [searchKeyword] = useDebounce(searchQuery, 500);
+
+	useEffect(() => {
+		refetch({ searchKeyword });
+	}, [searchKeyword]);
+
+	return (
+		<Searchbar
+			style={styles.search}
+			autoCapitalize={'none'}
+			placeholder='Search repositories'
+			onChangeText={setSearchQuery}
+			value={searchQuery}
+		/>
 	);
 };
 
@@ -102,7 +101,12 @@ export const RepositoryListContainer = ({
 	return (
 		<FlatList
 			data={repositoryNodes}
-			ListHeaderComponent={<SortSelection refetch={refetch} />}
+			ListHeaderComponent={
+				<>
+					<SearchRepositories refetch={refetch} />
+					<SortSelection refetch={refetch} />
+				</>
+			}
 			ItemSeparatorComponent={ItemSeparator}
 			renderItem={({ item }) => (
 				<Pressable onPress={() => openSingleView(item.id)}>
