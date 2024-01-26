@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_CURRENT_USER } from '../graphql/queries';
 
 const useCurrentUser = ({ includeReviews = false }) => {
-	const { data } = useQuery(GET_CURRENT_USER, {
+	const { data, refetch } = useQuery(GET_CURRENT_USER, {
 		fetchPolicy: 'cache-and-network',
 		variables: {
 			includeReviews,
@@ -11,6 +11,7 @@ const useCurrentUser = ({ includeReviews = false }) => {
 
 	return {
 		currentUser: data ? data.me : undefined,
+		refetch,
 	};
 };
 

@@ -47,5 +47,6 @@ export const REVIEW_DETAILS = gql`
 		rating
 		text
 		createdAt
+		id
 	}
 `;
