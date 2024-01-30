@@ -15,10 +15,6 @@ jobs:
       run:
         working-directory: 'part11/full-stack-open-pokedex'
     steps:
-      - name: Print current directory
-        run: pwd
-      - name: List contents
-        run: ls
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -33,10 +29,6 @@ jobs:
     needs: build
     runs-on: ubuntu-20.04
     steps:
-      - name: Print current directory
-        run: pwd
-      - name: List contents
-        run: ls
       - name: Check style
         run: npm run eslint
       - name: Unit tests
