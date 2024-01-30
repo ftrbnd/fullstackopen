@@ -5,20 +5,17 @@ on:
     branches:
       - main
     paths:
-      - 'part11/full-stack-open-pokedex/**'
+      - './part11/full-stack-open-pokedex/**'
       - '.github/workflows/**'
 
 jobs:
   simple_deployment_pipeline:
     defaults:
       run:
-        working-directory: part11/full-stack-open-pokedex
+        working-directory: './part11/full-stack-open-pokedex'
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-          path: part11/full-stack-open-pokedex
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
