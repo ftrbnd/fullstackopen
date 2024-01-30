@@ -8,11 +8,12 @@ on:
       - './part11/full-stack-open-pokedex/**'
       - '.github/workflows/**'
 
+defaults:
+  run:
+    working-directory: './part11/full-stack-open-pokedex'
+
 jobs:
-  simple_deployment_pipeline:
-    defaults:
-      run:
-        working-directory: './part11/full-stack-open-pokedex'
+  build:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v4
@@ -23,13 +24,17 @@ jobs:
           cache-dependency-path: './part11/full-stack-open-pokedex/package-lock.json'
       - name: Install dependencies
         run: npm ci
-      - name: Check style
-        run: npm run eslint
       - name: Build project
         run: npm run build
-      - name: Run tests
+  tests:
+    needs: build
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Check style
+        run: npm run eslint
+      - name: Unit tests
         run: npm test
-      - name: e2e tests
+      - name: E2E tests
         uses: cypress-io/github-action@v5
         with:
           command: npm run test:e2e
