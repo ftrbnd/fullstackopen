@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'part11/full-stack-open-pokedex/**'
-      - '!.github/workflows'
+      - '!.github/**'
 
 jobs:
   simple_deployment_pipeline:
