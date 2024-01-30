@@ -32,9 +32,6 @@ jobs:
   tests:
     needs: build
     runs-on: ubuntu-20.04
-    defaults:
-      run:
-        working-directory: 'part11/full-stack-open-pokedex'
     steps:
       - name: Print current directory
         run: pwd
