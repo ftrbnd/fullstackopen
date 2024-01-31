@@ -42,4 +42,5 @@ jobs:
           command: npm run test:e2e
           build: npm run build
           start: npm run start-prod
+          working-directory: './part11/full-stack-open-pokedex'
           wait-on: http://localhost:5000
