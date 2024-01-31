@@ -30,29 +30,12 @@ jobs:
             ${{ runner.os }}-build-
             ${{ runner.os }}-
 
-      - if: ${{ steps.cache-npm.outputs.cache-hit != 'true' }}
-        name: List the state of node modules
-        continue-on-error: true
-        run: npm list
-      - name: Install dependencies
-        run: npm ci
-      - name: Build project
-        run: npm run build
-  tests:
-    needs: build
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/cache@v3
-        id: cache-npm
-        env:
-          cache-name: cache-node-modules
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/part11/full-stack-open-pokedex/package-lock.json') }}
       - name: Install dependencies
         if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm ci
+      - name: Build project
+        run: npm run build
+      - uses: actions/checkout@v4
       - name: Check style
         run: npm run eslint
       - name: Unit tests
