@@ -24,10 +24,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
           cache-dependency-path: './part11/full-stack-open-pokedex/package-lock.json'
-      - name: 'Run echo'
-        env:
-          GH_WORKSPACE: ${{ github.workspace }}
-        run: echo "$GH_WORKSPACE"
       - name: Install dependencies
         run: npm ci
       - name: Build project
