@@ -35,4 +35,4 @@ primary_region = 'sjc'
   memory_mb = 1024
 
 [deploy]
-  strategy = "bluegreen"
+  strategy = "canary"
