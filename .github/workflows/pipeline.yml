@@ -9,7 +9,7 @@ on:
       - '.github/workflows/**'
 
 jobs:
-  simple_deployment_pipeline:
+  deployment_pipeline:
     runs-on: ubuntu-20.04
     defaults:
       run:
@@ -40,3 +40,8 @@ jobs:
           start: npm run start-prod
           working-directory: './part11/full-stack-open-pokedex'
           wait-on: http://localhost:5000
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy to fly.io
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
