@@ -45,9 +45,13 @@ jobs:
           working-directory: './part11/full-stack-open-pokedex'
           wait-on: http://localhost:5000
       - uses: superfly/flyctl-actions/setup-flyctl@master
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          github.event_name == 'push' ||
+          ( contains(${{github.event.commits.message}}, "#skip") )
       - name: Deploy to fly.io
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          github.event_name == 'push' ||
+          ( contains(${{github.event.commits.message}}, "#skip") )
         run: flyctl deploy --remote-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -57,7 +61,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        if: ${{ github.event_name == 'push' }}
+        if: |
+          github.event_name == 'push' ||
+          ( contains(${{github.event.commits.message}}, "#skip") )
         uses: anothrNick/github-tag-action@1.67.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
