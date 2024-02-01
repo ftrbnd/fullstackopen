@@ -43,7 +43,7 @@ jobs:
       - name: check expression
         env:
           EXPRESSION_RESULT: ${{ !(contains( join(toJson(github.event.commits.*.message) ), '#skip'))}}
-        run: echo "EXPRESSION_$RESULT"
+        run: echo "$EXPRESSION_RESULT"
 
       - name: Install dependencies
         run: npm ci
