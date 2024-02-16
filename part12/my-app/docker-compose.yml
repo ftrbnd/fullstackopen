@@ -1,0 +1,33 @@
+version: '3.8'
+
+# NOTE: Using patientor directories from part9
+
+services:
+  server:
+    image: patientor-back
+    container_name: patientor-back
+    build:
+      context: ../../part9/patientor-backend
+    volumes:
+      - ../../part9/patientor-backend/:/usr/src/app
+    environment:
+      - PORT=3001
+  app:
+    image: patientor-front
+    container_name: patientor-front
+    build:
+      context: ../../part9/patientor
+    volumes:
+      - ../../part9/patientor/:/usr/src/app
+    environment:
+      - VITE_API_BASE_URL=/api
+  nginx:
+    image: nginx:1.20.1
+    container_name: patientor-reverse-proxy
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - 8080:80
+    depends_on:
+      - app
+      - server
