@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  server:
+    image: patientor-backend-dev
+    container_name: patientor-backend-dev
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 3001:3001
+    environment:
+      - PORT=3001
