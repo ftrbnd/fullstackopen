@@ -1,4 +1,6 @@
+const jwt = require('jsonwebtoken');
 const { Blog, User } = require('../models');
+const { SECRET } = require('./config');
 
 const blogFinder = async (req, _res, next) => {
 	req.blog = await Blog.findByPk(req.params.id);
@@ -14,11 +16,25 @@ const userFinder = async (req, _res, next) => {
 	next();
 };
 
+const tokenExtractor = (req, res, next) => {
+	const authorization = req.get('authorization');
+	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+		try {
+			req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
+		} catch {
+			return res.status(401).json({ error: 'Token invalid' });
+		}
+	} else {
+		throw Error('Token missing');
+	}
+	next();
+};
+
 const errorHandler = (error, _request, response, _next) => {
 	console.log(error.message);
 
 	if (error.message === 'Blog not found') {
-		return response.status(404).json({ error: 'Blot not found' });
+		return response.status(404).json({ error: 'Blog not found' });
 	}
 
 	return response.status(400).json({ error: error.message });
@@ -26,5 +42,6 @@ const errorHandler = (error, _request, response, _next) => {
 module.exports = {
 	blogFinder,
 	userFinder,
+	tokenExtractor,
 	errorHandler,
 };
