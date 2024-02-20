@@ -3,7 +3,12 @@ const { Blog, User } = require('../models');
 const { blogFinder, tokenExtractor } = require('../utils/middleware');
 
 router.get('/', async (_req, res) => {
-	const blogs = await Blog.findAll();
+	const blogs = await Blog.findAll({
+		include: {
+			model: User,
+			attributes: ['name'],
+		},
+	});
 	res.json(blogs);
 });
 
@@ -17,7 +22,11 @@ router.post('/', tokenExtractor, async (req, res) => {
 	res.json(blog);
 });
 
-router.delete('/:id', blogFinder, async (req, res) => {
+router.delete('/:id', tokenExtractor, blogFinder, async (req, res) => {
+	if (req.blog.userId !== req.decodedToken.id) {
+		throw Error('Invalid user');
+	}
+
 	await req.blog.destroy();
 	res.status(204).end();
 });

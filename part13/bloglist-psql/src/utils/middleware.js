@@ -22,7 +22,7 @@ const tokenExtractor = (req, res, next) => {
 		try {
 			req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
 		} catch {
-			return res.status(401).json({ error: 'Token invalid' });
+			return res.status(401).json({ error: 'Invalid token' });
 		}
 	} else {
 		throw Error('Token missing');
