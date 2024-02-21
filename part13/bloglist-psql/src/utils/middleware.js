@@ -35,6 +35,10 @@ const errorHandler = (error, _request, response, _next) => {
 
 	if (error.message === 'Blog not found') {
 		return response.status(404).json({ error: 'Blog not found' });
+	} else if (error.message.includes('on year failed')) {
+		return response.status(400).json({
+			error: `Year must be between 1991 - ${new Date().getUTCFullYear()}`,
+		});
 	}
 
 	return response.status(400).json({ error: error.message });
