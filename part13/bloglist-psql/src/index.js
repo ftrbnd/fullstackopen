@@ -9,6 +9,7 @@ const {
 	loginRouter,
 	authorsRouter,
 	readingListsRouter,
+	logoutRouter,
 } = require('./controllers');
 
 const app = express();
@@ -19,6 +20,7 @@ app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 app.use('/api/authors', authorsRouter);
 app.use('/api/readinglists', readingListsRouter);
+app.use('/api/logout', logoutRouter);
 app.use(errorHandler);
 
 const start = async () => {

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { Blog, User } = require('../models');
+const { Blog, User, Session } = require('../models');
 const { SECRET } = require('./config');
 
 const blogFinder = async (req, _res, next) => {
@@ -16,10 +16,26 @@ const userFinder = async (req, _res, next) => {
 	next();
 };
 
-const tokenExtractor = (req, res, next) => {
+const tokenExtractor = async (req, res, next) => {
 	const authorization = req.get('authorization');
 	if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
 		try {
+			const token = authorization.substring(7);
+
+			const session = await Session.findOne({
+				where: {
+					token,
+				},
+				include: {
+					model: User,
+					attributes: ['disabled'],
+				},
+			});
+
+			if (!session) return res.status(401).json({ error: 'Session not found' });
+			if (session.user.disabled)
+				return res.status(401).json({ error: 'User disabled' });
+
 			req.decodedToken = jwt.verify(authorization.substring(7), SECRET);
 		} catch {
 			return res.status(401).json({ error: 'Invalid token' });
